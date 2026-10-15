@@ -254,7 +254,7 @@ describe('getConfig() – errors', () => {
     vi.stubEnv('MANTIS_BASE_URL', 'https://mantis.example.com');
 
     const getConfig = await freshGetConfig();
-    await expect(getConfig()).rejects.toThrow('MANTIS_API_KEY or MANTIS_COOKIE');
+    await expect(getConfig()).rejects.toThrow('MANTIS_API_KEY (or MANTIS_COOKIE)');
   });
 
   it('accepts MANTIS_COOKIE without MANTIS_API_KEY', async () => {
