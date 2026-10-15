@@ -189,7 +189,7 @@ export async function getConfig(): Promise<MantisConfig> {
 
   const missing: string[] = [];
   if (!baseUrl) missing.push('MANTIS_BASE_URL');
-  if (!apiKey && !cookie) missing.push('MANTIS_API_KEY or MANTIS_COOKIE');
+  if (!apiKey && !cookie) missing.push('MANTIS_API_KEY (or MANTIS_COOKIE)');
 
   if (missing.length > 0) {
     throw new Error(
