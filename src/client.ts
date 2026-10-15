@@ -133,6 +133,7 @@ export class MantisClient {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
+    // MantisBT REST accepts the API token as raw Authorization header value.
     if (apiKey) headers['Authorization'] = apiKey;
     // Intentionally set in Node.js runtime (server-side fetch); this project
     // does not run in browsers where Cookie is a forbidden request header.
