@@ -85,7 +85,9 @@ export class MantisClient {
       const useIndexPhp = typeof useIndexPhpOrObserver === 'boolean' ? useIndexPhpOrObserver : false;
       this.resolvedCredentials = {
         baseUrl: normalizeBaseUrl(baseUrlOrFactory),
+        // Direct constructor stays API-key based; cookie auth is supplied via factory/config.
         apiKey: apiKeyOrObserver as string,
+        cookie: undefined,
         useIndexPhp,
       };
       this.responseObserver = typeof useIndexPhpOrObserver === 'function'

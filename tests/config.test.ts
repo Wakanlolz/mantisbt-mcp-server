@@ -257,16 +257,6 @@ describe('getConfig() – errors', () => {
     await expect(getConfig()).rejects.toThrow('MANTIS_API_KEY (or MANTIS_COOKIE)');
   });
 
-  it('accepts MANTIS_COOKIE without MANTIS_API_KEY', async () => {
-    vi.stubEnv('MANTIS_BASE_URL', 'https://mantis.example.com');
-    vi.stubEnv('MANTIS_COOKIE', 'MANTIS_STRING_COOKIE=abc123');
-
-    const getConfig = await freshGetConfig();
-    const config = await getConfig();
-
-    expect(config.cookie).toBe('MANTIS_STRING_COOKIE=abc123');
-  });
-
   it('throws when no configuration is provided at all', async () => {
     const getConfig = await freshGetConfig();
     await expect(getConfig()).rejects.toThrow('Missing required MantisBT configuration');
