@@ -134,6 +134,8 @@ export class MantisClient {
       'Accept': 'application/json',
     };
     if (apiKey) headers['Authorization'] = apiKey;
+    // Intentionally set in Node.js runtime (server-side fetch); this project
+    // does not run in browsers where Cookie is a forbidden request header.
     else if (cookie) headers['Cookie'] = cookie;
     return headers;
   }
