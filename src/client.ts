@@ -86,7 +86,7 @@ export class MantisClient {
       this.resolvedCredentials = {
         baseUrl: normalizeBaseUrl(baseUrlOrFactory),
         // Direct constructor stays API-key based; cookie auth is supplied via factory/config.
-        apiKey: apiKeyOrObserver as string,
+        apiKey: apiKeyOrObserver as string | undefined,
         cookie: undefined,
         useIndexPhp,
       };
