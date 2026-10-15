@@ -129,6 +129,9 @@ export class MantisClient {
 
   private async headers(): Promise<Record<string, string>> {
     const { apiKey, cookie } = await this.getCredentials();
+    if (!apiKey && !cookie) {
+      throw new Error('Missing authentication credential: set either MANTIS_API_KEY or MANTIS_COOKIE.');
+    }
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',

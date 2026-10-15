@@ -205,6 +205,18 @@ describe('MantisClient – request headers', () => {
     expect(headers['Authorization']).toBe('myApiKey');
     expect(headers['Cookie']).toBeUndefined();
   });
+
+  it('throws a clear error when both apiKey and cookie are missing', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(makeResponse(200, '{}'));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const client = new MantisClient(async () => ({
+      baseUrl: 'https://mantis.example.com',
+    }));
+    await expect(client.get('issues')).rejects.toThrow(
+      'Missing authentication credential: set either MANTIS_API_KEY or MANTIS_COOKIE.'
+    );
+  });
 });
 
 // ---------------------------------------------------------------------------
