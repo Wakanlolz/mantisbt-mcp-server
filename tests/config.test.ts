@@ -50,6 +50,18 @@ describe('getConfig() – ENV variables', () => {
     expect(config.apiKey).toBe('env-api-key');
   });
 
+  it('accepts cookie authentication when no API key is set', async () => {
+    vi.stubEnv('MANTIS_BASE_URL', 'https://mantis.example.com');
+    vi.stubEnv('MANTIS_COOKIE', 'MANTIS_STRING_COOKIE=abc123');
+
+    const getConfig = await freshGetConfig();
+    const config = await getConfig();
+
+    expect(config.baseUrl).toBe('https://mantis.example.com');
+    expect(config.apiKey).toBeUndefined();
+    expect(config.cookie).toBe('MANTIS_STRING_COOKIE=abc123');
+  });
+
   it('strips trailing slash from baseUrl', async () => {
     vi.stubEnv('MANTIS_BASE_URL', 'https://mantis.example.com/');
     vi.stubEnv('MANTIS_API_KEY', 'key');
@@ -242,7 +254,17 @@ describe('getConfig() – errors', () => {
     vi.stubEnv('MANTIS_BASE_URL', 'https://mantis.example.com');
 
     const getConfig = await freshGetConfig();
-    await expect(getConfig()).rejects.toThrow('MANTIS_API_KEY');
+    await expect(getConfig()).rejects.toThrow('MANTIS_API_KEY or MANTIS_COOKIE');
+  });
+
+  it('accepts MANTIS_COOKIE without MANTIS_API_KEY', async () => {
+    vi.stubEnv('MANTIS_BASE_URL', 'https://mantis.example.com');
+    vi.stubEnv('MANTIS_COOKIE', 'MANTIS_STRING_COOKIE=abc123');
+
+    const getConfig = await freshGetConfig();
+    const config = await getConfig();
+
+    expect(config.cookie).toBe('MANTIS_STRING_COOKIE=abc123');
   });
 
   it('throws when no configuration is provided at all', async () => {

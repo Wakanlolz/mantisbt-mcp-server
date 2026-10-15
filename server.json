@@ -25,7 +25,14 @@
         {
           "name": "MANTIS_API_KEY",
           "description": "MantisBT API key (Profile → API Tokens in MantisBT)",
-          "isRequired": true,
+          "isRequired": false,
+          "isSecret": true,
+          "format": "string"
+        },
+        {
+          "name": "MANTIS_COOKIE",
+          "description": "Cookie header for authenticated session access (set either MANTIS_API_KEY or MANTIS_COOKIE)",
+          "isRequired": false,
           "isSecret": true,
           "format": "string"
         },

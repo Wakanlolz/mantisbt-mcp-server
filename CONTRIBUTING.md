@@ -5,7 +5,7 @@ Thank you for your interest in contributing to `mantisbt-mcp-server`!
 ## Prerequisites
 
 - Node.js ≥ 22
-- A MantisBT instance with a valid API token for integration testing
+- A MantisBT instance with either a valid API token or a valid authenticated session cookie for integration testing
 
 ## Setup
 
@@ -29,6 +29,8 @@ Set the required environment variables:
 ```bash
 export MANTIS_BASE_URL="https://your-mantis-instance.example.com/api/rest"
 export MANTIS_API_KEY="your-api-token"
+# or instead of MANTIS_API_KEY:
+# export MANTIS_COOKIE="MANTIS_STRING_COOKIE=...; MANTIS_SECURE_COOKIE=..."
 node dist/index.js
 ```
 

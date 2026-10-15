@@ -172,6 +172,39 @@ describe('MantisClient – request headers', () => {
       expect(headers['Content-Type']).toBe('application/json');
     });
   });
+
+  it('sends Cookie header when using cookie auth via credential factory', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(makeResponse(200, '{}'));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const client = new MantisClient(async () => ({
+      baseUrl: 'https://mantis.example.com',
+      cookie: 'MANTIS_STRING_COOKIE=abc123',
+    }));
+    await client.get('issues');
+
+    const options = fetchMock.mock.calls[0][1] as RequestInit;
+    const headers = options.headers as Record<string, string>;
+    expect(headers['Cookie']).toBe('MANTIS_STRING_COOKIE=abc123');
+    expect(headers['Authorization']).toBeUndefined();
+  });
+
+  it('prefers Authorization header when both apiKey and cookie are present', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(makeResponse(200, '{}'));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const client = new MantisClient(async () => ({
+      baseUrl: 'https://mantis.example.com',
+      apiKey: 'myApiKey',
+      cookie: 'MANTIS_STRING_COOKIE=abc123',
+    }));
+    await client.get('issues');
+
+    const options = fetchMock.mock.calls[0][1] as RequestInit;
+    const headers = options.headers as Record<string, string>;
+    expect(headers['Authorization']).toBe('myApiKey');
+    expect(headers['Cookie']).toBeUndefined();
+  });
 });
 
 // ---------------------------------------------------------------------------

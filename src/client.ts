@@ -63,8 +63,8 @@ export class MantisApiError extends Error {
 // ---------------------------------------------------------------------------
 
 type ResponseObserver = (response: Response) => void;
-type Credentials = { baseUrl: string; apiKey: string; useIndexPhp?: boolean };
-type ResolvedCredentials = { baseUrl: string; apiKey: string; useIndexPhp: boolean };
+type Credentials = { baseUrl: string; apiKey?: string; cookie?: string; useIndexPhp?: boolean };
+type ResolvedCredentials = { baseUrl: string; apiKey?: string; cookie?: string; useIndexPhp: boolean };
 type CredentialFactory = () => Promise<Credentials>;
 
 export class MantisClient {
@@ -103,8 +103,8 @@ export class MantisClient {
 
   private async getCredentials(): Promise<ResolvedCredentials> {
     if (!this.resolvedCredentials) {
-      const { baseUrl, apiKey, useIndexPhp = false } = await this.credentialFactory!();
-      this.resolvedCredentials = { baseUrl: normalizeBaseUrl(baseUrl), apiKey, useIndexPhp };
+      const { baseUrl, apiKey, cookie, useIndexPhp = false } = await this.credentialFactory!();
+      this.resolvedCredentials = { baseUrl: normalizeBaseUrl(baseUrl), apiKey, cookie, useIndexPhp };
     }
     return this.resolvedCredentials;
   }
@@ -128,12 +128,14 @@ export class MantisClient {
   }
 
   private async headers(): Promise<Record<string, string>> {
-    const { apiKey } = await this.getCredentials();
-    return {
-      'Authorization': apiKey,
+    const { apiKey, cookie } = await this.getCredentials();
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
+    if (apiKey) headers['Authorization'] = apiKey;
+    else if (cookie) headers['Cookie'] = cookie;
+    return headers;
   }
 
   private async handleResponse<T>(response: Response): Promise<T> {

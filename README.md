@@ -14,7 +14,7 @@ A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server that i
 
 - Node.js ≥ 22
 - MantisBT installation with REST API enabled (version 2.23+)
-- MantisBT API token (create under *My Account → API Tokens*)
+- MantisBT API token **or** an authenticated MantisBT session cookie
 
 ## Installation
 
@@ -69,7 +69,8 @@ npm run build
 | Variable | Required | Default | Description |
 |---|---|---|---|
 | `MANTIS_BASE_URL` | ✅ | – | Base URL of your MantisBT installation. Both `https://your-mantis.example.com` and `https://your-mantis.example.com/api/rest` are accepted — the `/api/rest` suffix is normalized automatically. |
-| `MANTIS_API_KEY` | ✅ | – | API token for authentication |
+| `MANTIS_API_KEY` | ✅* | – | API token for authentication |
+| `MANTIS_COOKIE` | ✅* | – | Cookie header value for authenticated session-based access (example: `MANTIS_STRING_COOKIE=...; MANTIS_SECURE_COOKIE=...`) |
 | `MANTIS_USE_INDEX_PHP` | – | auto | Set to `true` when URL rewriting is unavailable — REST requests then use `/api/rest/index.php/` instead of `/api/rest/`. Detected automatically when `MANTIS_BASE_URL` ends with `/api/rest/index.php`; an explicit value always wins. See the [cookbook](docs/cookbook.md#connect-to-an-installation-without-url-rewriting). |
 | `MANTIS_CACHE_DIR` | – | `~/.cache/mantisbt-mcp` | Directory for the metadata cache |
 | `MANTIS_CACHE_TTL` | – | `3600` | Cache lifetime in seconds |
@@ -83,6 +84,8 @@ npm run build
 | `MANTIS_SEARCH_MODEL` | – | `Xenova/paraphrase-multilingual-MiniLM-L12-v2` | Embedding model name (downloaded once on first use, ~80 MB) |
 | `MANTIS_SEARCH_THREADS` | – | `1` | Number of ONNX intra-op threads for the embedding model. Default is 1 to prevent CPU saturation on multi-core machines and WSL. Increase only if index rebuild speed matters and the host is dedicated to this workload. |
 | `MANTIS_UPLOAD_DIR` | – | – | Restrict `upload_file`'s `file_path` to files within this directory (path traversal via `../` is blocked). In **stdio mode** `file_path` is unrestricted unless this is set. In **HTTP mode** `file_path` reads from the server's filesystem, so it is **disabled unless this variable is set** — HTTP clients should upload via the `content` (Base64) parameter instead. |
+
+\* Provide at least one of `MANTIS_API_KEY` or `MANTIS_COOKIE`.
 
 ## Available tools
 

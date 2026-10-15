@@ -23,7 +23,8 @@ export interface SearchConfig {
  */
 export interface ConnectionConfig {
   baseUrl: string;
-  apiKey: string;
+  apiKey?: string;
+  cookie?: string;
   useIndexPhp: boolean;
 }
 
@@ -146,7 +147,7 @@ function resolveUseIndexPhp(rawBaseUrl: string): boolean {
 
 /**
  * Returns all non-credential config values. Never throws, even when
- * MANTIS_BASE_URL / MANTIS_API_KEY are absent. Use this at server startup
+ * MANTIS_BASE_URL / MANTIS_API_KEY / MANTIS_COOKIE are absent. Use this at server startup
  * so the MCP transport can connect and respond to tools/list without
  * requiring credentials to be configured.
  */
@@ -184,21 +185,23 @@ export async function getConfig(): Promise<MantisConfig> {
 
   const baseUrl = process.env.MANTIS_BASE_URL ?? '';
   const apiKey = process.env.MANTIS_API_KEY ?? '';
+  const cookie = process.env.MANTIS_COOKIE ?? '';
 
   const missing: string[] = [];
   if (!baseUrl) missing.push('MANTIS_BASE_URL');
-  if (!apiKey) missing.push('MANTIS_API_KEY');
+  if (!apiKey && !cookie) missing.push('MANTIS_API_KEY or MANTIS_COOKIE');
 
   if (missing.length > 0) {
     throw new Error(
       `Missing required MantisBT configuration: ${missing.join(', ')}.\n` +
-      `Set the environment variables MANTIS_BASE_URL and MANTIS_API_KEY.`
+      `Set MANTIS_BASE_URL and either MANTIS_API_KEY or MANTIS_COOKIE.`
     );
   }
 
   cachedConfig = {
     baseUrl: normalizeBaseUrl(baseUrl),
-    apiKey,
+    apiKey: apiKey || undefined,
+    cookie: cookie || undefined,
     useIndexPhp: resolveUseIndexPhp(baseUrl),
     ...readNonCredentialConfig(),
   };

@@ -45,7 +45,7 @@ const version = packageJson.version;
 
 async function createMcpServer(transport: 'stdio' | 'http'): Promise<McpServer> {
   // Use startup config (no credentials required) so the server can connect
-  // and respond to tools/list even without MANTIS_BASE_URL / MANTIS_API_KEY.
+  // and respond to tools/list even without MANTIS_BASE_URL / auth credentials.
   // Credentials are resolved lazily on the first actual tool invocation.
   const startupConfig = await getStartupConfig();
 
@@ -57,6 +57,7 @@ async function createMcpServer(transport: 'stdio' | 'http'): Promise<McpServer> 
       return {
         baseUrl: config.baseUrl,
         apiKey: config.apiKey,
+        cookie: config.cookie,
         useIndexPhp: config.useIndexPhp,
       };
     },

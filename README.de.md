@@ -14,7 +14,7 @@ Ein [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) Server, der
 
 - Node.js ≥ 22
 - MantisBT-Installation mit aktivierter REST-API (ab Version 2.23)
-- MantisBT API-Token (unter *Mein Konto → API-Token* erstellen)
+- MantisBT API-Token **oder** ein authentifizierter MantisBT-Session-Cookie
 
 ## Installation
 
@@ -69,7 +69,8 @@ npm run build
 | Variable | Pflicht | Standard | Beschreibung |
 |---|---|---|---|
 | `MANTIS_BASE_URL` | ✅ | – | Basis-URL der MantisBT-Installation. Beide Formate werden akzeptiert: `https://deine-mantis-instanz.example.com` und `https://deine-mantis-instanz.example.com/api/rest` – das `/api/rest`-Suffix wird automatisch normalisiert. |
-| `MANTIS_API_KEY` | ✅ | – | API-Token für die Authentifizierung |
+| `MANTIS_API_KEY` | ✅* | – | API-Token für die Authentifizierung |
+| `MANTIS_COOKIE` | ✅* | – | Cookie-Header für authentifizierten Session-Zugriff (Beispiel: `MANTIS_STRING_COOKIE=...; MANTIS_SECURE_COOKIE=...`) |
 | `MANTIS_USE_INDEX_PHP` | – | auto | Auf `true` setzen, wenn URL-Rewriting nicht verfügbar ist – REST-Anfragen verwenden dann `/api/rest/index.php/` statt `/api/rest/`. Wird automatisch erkannt, wenn `MANTIS_BASE_URL` auf `/api/rest/index.php` endet; ein explizit gesetzter Wert hat immer Vorrang. Siehe [Cookbook](docs/cookbook.de.md#installation-ohne-url-rewriting-anbinden). |
 | `MANTIS_CACHE_DIR` | – | `~/.cache/mantisbt-mcp` | Verzeichnis für den Metadaten-Cache |
 | `MANTIS_CACHE_TTL` | – | `3600` | Cache-Lebensdauer in Sekunden |
@@ -83,6 +84,8 @@ npm run build
 | `MANTIS_SEARCH_MODEL` | – | `Xenova/paraphrase-multilingual-MiniLM-L12-v2` | Embedding-Modell (wird beim ersten Start einmalig heruntergeladen, ~80 MB) |
 | `MANTIS_SEARCH_THREADS` | – | `1` | Anzahl der ONNX-Intra-Op-Threads für das Embedding-Modell. Standard ist 1, um CPU-Sättigung auf Mehrkernsystemen und in WSL zu verhindern. Nur erhöhen, wenn die Indexierungsgeschwindigkeit kritisch ist und der Host ausschließlich für diese Last vorgesehen ist. |
 | `MANTIS_UPLOAD_DIR` | – | – | Schränkt den `file_path` von `upload_file` auf dieses Verzeichnis ein (Pfad-Traversal via `../` wird blockiert). Im **stdio-Modus** ist `file_path` ohne diese Variable unbeschränkt. Im **HTTP-Modus** liest `file_path` aus dem Dateisystem des Servers und ist deshalb **deaktiviert, sofern diese Variable nicht gesetzt ist** – HTTP-Clients sollten stattdessen den Parameter `content` (Base64) verwenden. |
+
+\* Mindestens eine der Variablen `MANTIS_API_KEY` oder `MANTIS_COOKIE` muss gesetzt sein.
 
 ## Verfügbare Tools
 
